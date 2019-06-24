@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http:# www.gnu.org/licenses/>.
 #-----------------------------------------------------------------------------
-
+from __future__ import print_function
 import qwiic_i2c
 
 import time
@@ -142,7 +142,7 @@ class QwiicCcs811(object):
 		# are we who we need to be?
 		chipID = self._i2c.readByte(self.address, CSS811_HW_ID)
 		if not chipID in _validChipIDs:
-			print("Invalid Chip ID: 0x%.2X" % chipID, file=sys.stderr)
+			print("Invalid Chip ID: 0x%.2X" % chipID)
 			return self.SENSOR_ID_ERROR
 
 		if self.checkForStatusError() or not self.appValid():
