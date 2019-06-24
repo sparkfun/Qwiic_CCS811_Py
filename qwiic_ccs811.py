@@ -87,7 +87,7 @@ CSS811_SW_RESET = 0xFF
 # device is encapsulated by this class. The device class should be the only value exported 
 # from this module.
 
-class QwiicCCS811(object):
+class QwiicCcs811(object):
 
 	# Constructor
 	device_name = _DEFAULT_NAME
