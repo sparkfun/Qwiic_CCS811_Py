@@ -248,9 +248,6 @@ class QwiicCcs811(object):
 		
 		return self.SENSOR_SUCCESS
 
-	baseline = property()
-	baseline = baseline.setter(setBaseline)
-
 	#----------------------------------------------------	
 	# Enable the nINT signal
 	def enableInterrupts( self ):
@@ -291,9 +288,6 @@ class QwiicCcs811(object):
 		self._i2c.writeByte(self.address, CSS811_MEAS_MODE, value)		
 
 		return self.SENSOR_SUCCESS
-
-	drive_mode = property()
-	drive_mode = drive_mode.setter(setDriveMode)
 
 	#----------------------------------------------------
 	## Given a temp and humidity, write this data to the CSS811 for better compensation
@@ -350,8 +344,6 @@ class QwiicCcs811(object):
 	def getRefResistance(self):
 		return self.refResistance
 
-	ref_resistance = property(getRefResistance, setRefResistance)
-
 	#----------------------------------------------------
 	def readNTC( self ):
 	
@@ -378,25 +370,18 @@ class QwiicCcs811(object):
 	def getTVOC( self ):
 		return self.tVOC
 	
-	tvoc = property(getTVOC)
 
 	#----------------------------------------------------	
 	# CO2 Value
 	def getCO2( self ):
 		return self.CO2
 
-	co2 = property(getCO2)
-
 	#----------------------------------------------------
 	# Resistance Value
 	def getResistance( self ):
 		return self.resistance
-	
-	resistance = property(getResistance)
 
 	#----------------------------------------------------	
 	# Temperature Value
 	def getTemperature( self ):
 		return self.temperature
-
-	temperature = property(getTemperature)
