@@ -1,14 +1,18 @@
 #-----------------------------------------------------------------------------
-# exampledevice.py
+# qwiic_ccs811.py
 #
-# Simple Example device for qwiic
+# Python module for the SparkFun qwiic CCS811 sensor.
+#
+#
+# This sensor is available on the SparkFun Environmental Combo Breakout board.
+#	https://www.sparkfun.com/products/14348
+#
 #------------------------------------------------------------------------
 #
 # Written by  SparkFun Electronics, May 2019
 # 
 # This python library supports the SparkFun Electroncis qwiic 
-# qwiic sensor/board ecosystem on a Raspberry Pi (and compatable) single
-# board computers. 
+# qwiic sensor/board ecosystem.
 #
 # More information on qwiic is at https:# www.sparkfun.com/qwiic
 #
@@ -53,14 +57,11 @@ import sys
 # Define the device name and I2C addresses. These are set in the class defintion 
 # as class variables, making them avilable without having to create a class instance.
 #
-# The base class and associated support functions use these class varables to 
-# allow users to easily identify connected devices as well as provide basic 
-# device services.
 #
 # The name of this device - note this is private 
 _DEFAULT_NAME = "Qwiic CCS811"
 
-# Some devices have multiple availabel addresses - this is a list of these addresses.
+# Some devices have multiple available addresses - this is a list of these addresses.
 # NOTE: The first address in this list is considered the default I2C address for the 
 # device.
 _AVAILABLE_I2C_ADDRESS = [0x5B, 0x5A]
@@ -83,9 +84,7 @@ CSS811_FW_APP_VERSION = 0x24
 CSS811_ERROR_ID = 0xE0
 CSS811_APP_START = 0xF4
 CSS811_SW_RESET = 0xFF
-# define the class that encapsulates the device being created. All information associated with this
-# device is encapsulated by this class. The device class should be the only value exported 
-# from this module.
+
 
 class QwiicCcs811(object):
 
@@ -101,16 +100,22 @@ class QwiicCcs811(object):
 	SENSOR_INTERNAL_ERROR 	= 3
 	SENSOR_GENERIC_ERROR  	= 4
 
-	def __init__(self, address=None):
+	def __init__(self, address=None, i2c_driver=None):
+
+
+		# Did the user specify an I2C address?
 
 		self.address = address if address != None else self.available_addresses[0]
 
-		# load the I2C driver
+		# load the I2C driver if one isn't provided
 
-		self._i2c = qwiic_i2c.getI2CDriver()
-		if self._i2c == None:
-			print("Unable to load I2C driver for this platform.")
-			return
+		if i2c_driver == None:
+			self._i2c = qwiic_i2c.getI2CDriver()
+			if self._i2c == None:
+				print("Unable to load I2C driver for this platform.")
+				return
+		else:
+			self._i2c = i2c_driver
 
 		# qir quality values returned from the sensor
 		self.refResistance = 10000.
@@ -121,9 +126,18 @@ class QwiicCcs811(object):
 		self.ntcCounts = 0
 		self.temperature =  0.0
 
+	# ----------------------------------
+	# isConnected()
+	#
+	# Is an actual board connected to our system?
+
 	def isConnected(self):
 		return qwiic_i2c.isDeviceConnected(self.address)
 
+	# ----------------------------------
+	# begin()
+	#
+	# Initialize the system/validate the board. 
 	def begin(self):
 
 		# wait for sensor to come up...
@@ -171,6 +185,7 @@ class QwiicCcs811(object):
 		self.tVOC = (data[2] << 8) | data[3]
 		return self.SENSOR_SUCCESS
 
+	#----------------------------------------------------
 	# Checks to see if error bit is set
 	def checkForStatusError( self ):
 
@@ -179,6 +194,7 @@ class QwiicCcs811(object):
 
 		return (value & 1 << 0)
 	
+	#----------------------------------------------------	
 	# Checks to see if DATA_READ flag is set in the status register
 	def dataAvailable( self ):
 
@@ -189,6 +205,7 @@ class QwiicCcs811(object):
 
 		return (value & 1 << 3 != 0)
 
+	#----------------------------------------------------
 	# Checks to see if APP_VALID flag is set in the status register
 	def appValid( self ):
 
@@ -220,7 +237,7 @@ class QwiicCcs811(object):
 
 		return value
 
-
+	#----------------------------------------------------
 	def setBaseline( self, input ):
 
 		data = bytearray(2)
@@ -231,6 +248,10 @@ class QwiicCcs811(object):
 		
 		return self.SENSOR_SUCCESS
 
+	baseline = property()
+	baseline = baseline.setter(setBaseline)
+
+	#----------------------------------------------------	
 	# Enable the nINT signal
 	def enableInterrupts( self ):
 	
@@ -241,6 +262,7 @@ class QwiicCcs811(object):
 
 		return self.SENSOR_SUCCESS
 
+	#----------------------------------------------------
 	# Disable the nINT signal
 	def disableInterrupts( self ):
 		value = self._i2c.readByte(self.address, CSS811_MEAS_MODE)
@@ -250,6 +272,7 @@ class QwiicCcs811(object):
 
 		return self.SENSOR_SUCCESS
 
+	#----------------------------------------------------
 	# Mode 0 = Idle
 	# Mode 1 = read every 1s
 	# Mode 2 = every 10s
@@ -269,7 +292,10 @@ class QwiicCcs811(object):
 
 		return self.SENSOR_SUCCESS
 
+	drive_mode = property()
+	drive_mode = drive_mode.setter(setDriveMode)
 
+	#----------------------------------------------------
 	## Given a temp and humidity, write this data to the CSS811 for better compensation
 	#$ This function expects the humidity and temp to come in as floats
 	def setEnvironmentalData( self, relativeHumidity,  temperature ):
@@ -317,9 +343,16 @@ class QwiicCcs811(object):
 
 		return self.SENSOR_SUCCESS
 
+	#----------------------------------------------------
 	def setRefResistance(self, input):
 		self.refResistance = input
 
+	def getRefResistance(self):
+		return self.refResistance
+
+	ref_resistance = property(getRefResistance, setRefResistance)
+
+	#----------------------------------------------------
 	def readNTC( self ):
 	
 		data = self._i2c.readBlock(self.address, CSS811_NTC, 4)
@@ -340,16 +373,30 @@ class QwiicCcs811(object):
 	
 		return self.SENSOR_SUCCESS
 
-
+	#----------------------------------------------------
+	# TVOC Value
 	def getTVOC( self ):
 		return self.tVOC
 	
+	tvoc = property(getTVOC)
+
+	#----------------------------------------------------	
+	# CO2 Value
 	def getCO2( self ):
 		return self.CO2
 
-	
+	co2 = property(getCO2)
+
+	#----------------------------------------------------
+	# Resistance Value
 	def getResistance( self ):
 		return self.resistance
 	
+	resistance = property(getResistance)
+
+	#----------------------------------------------------	
+	# Temperature Value
 	def getTemperature( self ):
 		return self.temperature
+
+	temperature = property(getTemperature)
