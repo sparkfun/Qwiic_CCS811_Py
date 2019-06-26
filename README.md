@@ -4,6 +4,8 @@ Python module for the qwiic ccs811 sensor, which is part of the [SparkFun Qwiic 
 
 ![SparkFun Qwiic Environmental Combo Breakout](https://cdn.sparkfun.com//assets/parts/1/2/3/2/9/14348-01.jpg)
 
+This python package is a port of the existing [SparkFun CCS811 Arduino Library](https://github.com/sparkfun/SparkFun_CCS811_Arduino_Library)
+
 ## Dependencies 
 This driver package depends on the qwii I2C driver: 
 [Qwiic_I2C_Py](https://github.com/sparkfun/Qwiic_I2C_Py)
@@ -63,9 +65,40 @@ dtparam=i2c_arm_baudrate=10000
 See the examples directory for more detailed use examples.
 
 ```python
-import qwiic_bme280
+from __future__ import print_function
+import qwiic_ccs811
 import time
 import sys
 
-# TODO
+def runExample():
+
+	print("\nSparkFun CCS811 Sensor Basic Example \n")
+	mySensor = qwiic_ccs811.QwiicCcs811()
+
+	if mySensor.isConnected() == False:
+		print("The Qwiic CCS811 device isn't connected to the system. Please check your connection", \
+			file=sys.stderr)
+		return
+
+	mySensor.begin()
+
+	while True:
+
+		mySensor.readAlgorithmResults()
+
+		print("CO2:\t%.3f" % mySensor.getCO2())
+
+		print("tVOC:\t%.3f\n" % mySensor.getTVOC())	
+
+		
+		time.sleep(1)
+
+
+if __name__ == '__main__':
+	try:
+		runExample()
+	except (KeyboardInterrupt, SystemExit) as exErr:
+		print("\nEnding Basic Example")
+		sys.exit(0)
+
 ```
