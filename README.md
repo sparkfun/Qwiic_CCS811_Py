@@ -1,8 +1,13 @@
 # Qwiic_CCS811_Py
+<p align="center">
+   <img src="https://cdn.sparkfun.com/assets/custom_pages/2/7/2/qwiic-logo-registered.jpg"  width=200>
+</p>
 
 Python module for the qwiic ccs811 sensor, which is part of the [SparkFun Qwiic Environmental Combo Breakout](https://www.sparkfun.com/products/14348)
 
-![SparkFun Qwiic Environmental Combo Breakout](https://cdn.sparkfun.com//assets/parts/1/2/3/2/9/14348-01.jpg)
+<p align="center">
+   <img src="https://cdn.sparkfun.com//assets/parts/1/2/3/2/9/14348-01.jpg"  width=300 alt="SparkFun qwiic Environmental Combo">
+</p>
 
 This python package is a port of the existing [SparkFun CCS811 Arduino Library](https://github.com/sparkfun/SparkFun_CCS811_Arduino_Library)
 
