@@ -119,12 +119,12 @@ class QwiicCcs811(object):
 
 		# qir quality values returned from the sensor
 		self.refResistance = 10000.
-		self.resistance = 0.0
-		self.tVOC = 0
-		self.CO2 = 0
+		self._resistance = 0.0
+		self._tVOC = 0
+		self._CO2 = 0
 		self.vrefCounts = 0
 		self.ntcCounts = 0
-		self.temperature =  0.0
+		self._temperature =  0.0
 
 	# ----------------------------------
 	# isConnected()
@@ -181,8 +181,8 @@ class QwiicCcs811(object):
 		#  Data ordered:
 		#  co2MSB, co2LSB, tvocMSB, tvocLSB
 	
-		self.CO2 = (data[0] << 8) | data[1]
-		self.tVOC = (data[2] << 8) | data[3]
+		self._CO2 = (data[0] << 8) | data[1]
+		self._tVOC = (data[2] << 8) | data[3]
 		return self.SENSOR_SUCCESS
 
 	#----------------------------------------------------
@@ -353,35 +353,44 @@ class QwiicCcs811(object):
 
 		self.ntcCounts = (data[2] << 8) | data[3]
 
-		self.resistance = self.ntcCounts * self.refResistance / float(self.vrefCounts)
+		self._resistance = self.ntcCounts * self.refResistance / float(self.vrefCounts)
 	
 		
 		# Code from Milan Malesevic and Zoran Stupic, 2011,
 		# Modified by Max Mayfield,
-		self.temperature = math.log(int(self.resistance))
-		self.temperature = 1 / (0.001129148 + (0.000234125 * self.temperature) + \
-			   (0.0000000876741 * self.temperature * self.temperature * self.temperature))
-		self.temperature = self.temperature - 273.15  # Convert Kelvin to Celsius
+		if self._resistance == 0:
+			# we had an error of some sorts. Log 0 is not a happy value
+			print("Error - Invalid recieved from sensor")
+			return 1
+
+		self._temperature = math.log(int(self._resistance))
+		self._temperature = 1 / (0.001129148 + (0.000234125 * self._temperature) + \
+			   (0.0000000876741 * self._temperature * self._temperature * self._temperature))
+		self._temperature = self._temperature - 273.15  # Convert Kelvin to Celsius
 	
 		return self.SENSOR_SUCCESS
 
 	#----------------------------------------------------
 	# TVOC Value
 	def getTVOC( self ):
-		return self.tVOC
+		return self._tVOC
 	
-
+	TVOC = property(getTVOC)
 	#----------------------------------------------------	
 	# CO2 Value
 	def getCO2( self ):
-		return self.CO2
+		return self._CO2
 
+	CO2 = property(getCO2)
 	#----------------------------------------------------
 	# Resistance Value
 	def getResistance( self ):
-		return self.resistance
+		return self._resistance
 
+	resistance = property(getResistance)
 	#----------------------------------------------------	
 	# Temperature Value
 	def getTemperature( self ):
-		return self.temperature
+		return self._temperature
+
+	temperature = property(getTemperature)
