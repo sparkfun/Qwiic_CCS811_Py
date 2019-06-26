@@ -151,7 +151,7 @@ class QwiicCcs811(object):
 
 		self._i2c.writeBlock(self.address, CSS811_SW_RESET, data)
 
-		time.sleep(.2)
+		time.sleep(.5)
 
 		# are we who we need to be?
 		chipID = self._i2c.readByte(self.address, CSS811_HW_ID)
