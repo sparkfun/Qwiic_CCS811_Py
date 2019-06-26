@@ -162,7 +162,7 @@ class QwiicCcs811(object):
 		if self.checkForStatusError() or not self.appValid():
 			return self.SENSOR_INTERNAL_ERROR
 
-		self._i2c.writeCommand(CSS811_APP_START)
+		self._i2c.writeCommand(self.address, CSS811_APP_START)
 
 		return self.setDriveMode(1)  # read every second
 
