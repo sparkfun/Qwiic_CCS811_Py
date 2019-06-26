@@ -66,8 +66,8 @@ def runExample():
 
 			mySensor.readAlgorithmResults()
 
-			print("  CO2:\t%.3f ppm" % mySensor.getCO2())
-			print("  tVOC:\t%.3f ppb\n" % mySensor.getTVOC())	
+			print("  CO2:\t%.3f ppm" % mySensor.CO2)
+			print("  tVOC:\t%.3f ppb\n" % mySensor.TVOC)	
 
 		elif mySensor.checkForStatusError():
 

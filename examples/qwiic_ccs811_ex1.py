@@ -44,9 +44,9 @@ def runExample():
 
 		mySensor.readAlgorithmResults()
 
-		print("CO2:\t%.3f" % mySensor.getCO2())
+		print("CO2:\t%.3f" % mySensor.CO2)
 
-		print("tVOC:\t%.3f\n" % mySensor.getTVOC())	
+		print("tVOC:\t%.3f\n" % mySensor.TVOC)	
 
 		
 		time.sleep(1)

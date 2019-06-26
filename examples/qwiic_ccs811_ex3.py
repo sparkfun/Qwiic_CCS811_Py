@@ -58,14 +58,14 @@ def runExample():
 
 			mySensor.readAlgorithmResults()
 
-			print("CO2:\t%.3f ppm" % mySensor.getCO2())
+			print("CO2:\t%.3f ppm" % mySensor.CO2)
 
-			print("tVOC:\t%.3f ppb" % mySensor.getTVOC())	
+			print("tVOC:\t%.3f ppb" % mySensor.TVOC)
 
 			mySensor.readNTC()
-			print("Measured Resistance: %.3f ohms" % mySensor.getResistance())
+			print("Measured Resistance: %.3f ohms" % mySensor.resistance)
 
-			readTemperature = mySensor.getTemperature()
+			readTemperature = mySensor.temperature
 			print("Converted Temperature: %.2f deg C" % readTemperature)
 
 			mySensor.setEnvironmentalData( 50, readTemperature)
