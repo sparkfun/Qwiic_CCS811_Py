@@ -18,7 +18,7 @@ Qwiic_CCS811_Py
 	
 </p>
 
-<img src="https://cdn.sparkfun.com//assets/parts/1/2/3/2/9/14348-01.jpg"  align="right" width=340 alt="SparkFun qwiic Environmental Combo">
+<img src="https://cdn.sparkfun.com//assets/parts/1/2/3/2/9/14348-01.jpg"  align="right" width=300 alt="SparkFun qwiic Environmental Combo">
 
 
 Python module for the qwiic ccs811 sensor, which is part of the [SparkFun Qwiic Environmental Combo Breakout](https://www.sparkfun.com/products/14348)
@@ -75,13 +75,13 @@ To do this:
 - Login as root to the target Raspberry Pi
 - Open the file /boot/config.txt in your favorite editor (vi, nano ...etc)
 - Scroll down until the bloct that contains the following is found:
-```
+```ini
 dtparam=i2c_arm=on
 dtparam=i2s=on
 dtparam=spi=on
 ```
 - Add the following line:
-```
+```ini
 # Enable I2C clock stretching
 dtparam=i2c_arm_baudrate=10000
 ```
