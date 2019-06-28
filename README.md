@@ -29,7 +29,7 @@ This package can be used in conjunction with the overall [SparkFun qwiic Python 
 
 New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.sparkfun.com/qwiic).
 
-Using on a Raspberry Pi? See this important [use Note](#raspberry-pi-use)
+Using on a **Raspberry Pi**? See this important [use Note](#raspberry-pi-use)
 
 Dependencies 
 --------------
