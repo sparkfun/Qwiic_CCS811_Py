@@ -29,7 +29,7 @@ This package can be used in conjunction with the overall [SparkFun qwiic Python 
 
 New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.sparkfun.com/qwiic).
 
-<span style="background-color: green">Using on a **Raspberry Pi**? See this important [use Note](#raspberry-pi-use)</span>
+**Using this sensor on a Raspberry Pi**? See the important [usage note](#raspberry-pi-use) on this page.
 
 Dependencies 
 --------------
