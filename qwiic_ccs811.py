@@ -53,7 +53,79 @@ import sys
 #	
 #	- Save the file
 #	- Reboot the raspberry pi
-#======================================================================
+#====================================================================== 
+def __checkIsOnRPi():
+
+	# Are we on a Pi? First Linux?
+
+	if not sys.platform in ('linux', 'linux2'):
+		return False
+
+	# we can find out if we are on a RPI by looking at the contents
+	# of /proc/device-tree/compatable
+
+	try:
+		with open('/proc/device-tree/compatible', 'r') as fCompat:
+
+			systype = fCompat.read()
+
+			return systype.find('raspberrypi') != -1
+	except:
+		return False
+
+# check if stretching is set if on a rpi
+# 
+def _checkForRPiI2CClockStretch():
+
+	#are we on a rpi?
+	if not __checkIsOnRPi():
+		return
+
+	# read the boot config file and see if the clock stretch param is set
+	try:
+		with open('/boot/config.txt') as fConfig:
+
+			strConfig = fConfig.read()
+			for line in strConfig.split('\n'):
+				if line.find('i2c_arm_baudrate') == -1:
+					continue
+
+				# start with a comment?
+				if line.strip().startswith('#'):
+					break
+
+				# is the value less <= 10000
+				params = line.split('=')
+				if int(params[-1]) <= 10000:
+					# Stretching is enabled and set correctly. 
+					return
+
+				break
+	except:
+		pass
+
+	# if we are here, then we are on a Raspberry Pi and Clock Stretching isn't 
+	# set correctly. 
+	# Print out a message! 
+
+	print("""
+============================================================================
+ NOTE:
+
+ For the CCS811 sensor to work on the Raspberry Pi, I2C clock stretching 
+ must be enabled. 
+
+ The following line must be added to the file /boot/config.txt
+
+	dtparam=i2c_arm_baudrate=10000
+
+ For more information, see the note at:
+          https://github.com/sparkfun/Qwiic_CCS811_Py
+============================================================================
+		""")
+
+
+#====================================================================== 
 # Define the device name and I2C addresses. These are set in the class defintion 
 # as class variables, making them avilable without having to create a class instance.
 #
@@ -100,7 +172,20 @@ class QwiicCcs811(object):
 	SENSOR_INTERNAL_ERROR 	= 3
 	SENSOR_GENERIC_ERROR  	= 4
 
+	_RPiCheck = False
+
 	def __init__(self, address=None, i2c_driver=None):
+
+
+		# As noted above, to run this device on a Raspberry Pi, 
+		# clock streching is needed. 
+		# 
+		# Lets check if it's enabled. This is done only once in 
+		# the session
+		if QwiicCcs811._RPiCheck == False:
+			_checkForRPiI2CClockStretch()
+			QwiicCcs811._RPiCheck = True
+
 
 
 		# Did the user specify an I2C address?
