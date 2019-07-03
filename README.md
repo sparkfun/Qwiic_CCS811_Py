@@ -32,10 +32,21 @@ New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.s
 ### :warning: **Using this sensor on a Raspberry Pi**? :warning:
 Your system might need modification. See this [note](#raspberry-pi-use).
 
+## Contents
+
+* [Dependencies](#dependencies)
+* [Installation](#installation)
+* [Documentation](#documentation)
+* [Example Use](#example-use)
+
 Dependencies 
 --------------
 This driver package depends on the qwiic I2C driver: 
 [Qwiic_I2C_Py](https://github.com/sparkfun/Qwiic_I2C_Py)
+
+Documentation
+-------------
+The Sparkfun qwiic CCS811 module documentation is hosted at [ReadTheDocs](https://qwiic-ccs811-py.readthedocs.io/en/latest/?)
 
 Installation
 ---------------
