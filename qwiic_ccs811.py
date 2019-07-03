@@ -26,6 +26,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http:# www.gnu.org/licenses/>.
 #-----------------------------------------------------------------------------
+
+"""
+qwiic_ccs811
+============
+Python module for the qwiic ccs811 sensor, which is part of the [SparkFun Qwiic Environmental Combo Breakout](https://www.sparkfun.com/products/14348)
+
+This python package is a port of the existing [SparkFun CCS811 Arduino Library](https://github.com/sparkfun/SparkFun_CCS811_Arduino_Library)
+
+This package can be used in conjunction with the overall [SparkFun qwiic Python Package](https://github.com/sparkfun/Qwiic_Py)
+
+New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.sparkfun.com/qwiic).
+
+"""
 from __future__ import print_function
 import qwiic_i2c
 
@@ -159,7 +172,16 @@ CSS811_SW_RESET = 0xFF
 
 
 class QwiicCcs811(object):
+	"""
+	QwiicCccs811
 
+		:param address: The I2C address to use for the device. 
+						If not provided, the default address is used.
+		:param i2c_driver: An existing i2c driver object. If not provided 
+						a driver object is created. 
+		:return: The Ccs811 device object.
+		:rtype: Object
+	"""
 	# Constructor
 	device_name = _DEFAULT_NAME
 	available_addresses = _AVAILABLE_I2C_ADDRESS
@@ -217,6 +239,13 @@ class QwiicCcs811(object):
 	# Is an actual board connected to our system?
 
 	def isConnected(self):
+		""" 
+			Determine if a CCS811 device is conntected to the system..
+
+			:return: True if the device is connected, otherwise False.
+			:rtype: bool
+
+		"""
 		return qwiic_i2c.isDeviceConnected(self.address)
 
 	# ----------------------------------
@@ -224,6 +253,14 @@ class QwiicCcs811(object):
 	#
 	# Initialize the system/validate the board. 
 	def begin(self):
+		""" 
+			Initialize the operation of the Ccs811 module
+
+			:return: Returns SENSOR_SUCCESS on success, SENSOR_ID_ERROR on bad chip ID 
+				or SENSOR_INTERNAL_ERROR.
+			:rtype: integer
+
+		"""
 
 		# wait for sensor to come up...
 		time.sleep(.1)
@@ -260,6 +297,13 @@ class QwiicCcs811(object):
 	# and the CO2 value
 	# Returns nothing
 	def readAlgorithmResults( self ):
+		""" 
+			Reads the resutls from the sensor and stores internally
+
+			:return: SENSOR_SUCCESS
+			:rtype: integer
+
+		"""
 
 		data = self._i2c.readBlock(self.address, CSS811_ALG_RESULT_DATA, 4)
 
@@ -273,7 +317,13 @@ class QwiicCcs811(object):
 	#----------------------------------------------------
 	# Checks to see if error bit is set
 	def checkForStatusError( self ):
+		""" 
+			Returns  if the Error bit on the sensor is set.
 
+			:return: value of Error bit
+			:rtype: integer
+
+		"""
 		# return the status bit
 		value = self._i2c.readByte(self.address, CSS811_STATUS)
 
@@ -282,6 +332,13 @@ class QwiicCcs811(object):
 	#----------------------------------------------------	
 	# Checks to see if DATA_READ flag is set in the status register
 	def dataAvailable( self ):
+		""" 
+			Returns True if data is available on the sensor
+
+			:return: True if data is available.
+			:rtype: bool
+
+		"""
 
 		try:
 			value = self._i2c.readByte(self.address, CSS811_STATUS)
@@ -293,6 +350,13 @@ class QwiicCcs811(object):
 	#----------------------------------------------------
 	# Checks to see if APP_VALID flag is set in the status register
 	def appValid( self ):
+		""" 
+			Returns True if if the sensor APP_VALID bit is set in the status register
+
+			:return: True if APP_VALID is set
+			:rtype: bool
+
+		"""
 
 		try:
 			value = self._i2c.readByte(self.address, CSS811_STATUS)
@@ -303,6 +367,13 @@ class QwiicCcs811(object):
 
 	def getErrorRegister( self ):
 
+		""" 
+			Returns the value of the sensors error Register
+
+			:return: Error register
+			:rtype: int
+
+		"""
 		try:
 			value = self._i2c.readByte(self.address, CSS811_ERROR_ID)
 		except:
@@ -314,7 +385,15 @@ class QwiicCcs811(object):
 	# Used for telling sensor what 'clean' air is
 	# You must put the sensor in clean air and record this value
 	def getBaseline( self ):
-	
+		""" 
+			Returns the baseline value
+			Used for telling sensor what 'clean' air is
+			You must put the sensor in clean air and record this value
+
+			:return: Baseline value for the sensor
+			:rtype: integer
+
+		"""
 		try:
 			value = self._i2c.readWord(self.address, CSS811_BASELINE)
 		except:
@@ -324,6 +403,12 @@ class QwiicCcs811(object):
 
 	#----------------------------------------------------
 	def setBaseline( self, input ):
+		""" 
+			Set the baseline value for the sensor
+
+			:return: SENSOR_SUCCESS
+			:rtype: integer
+		"""
 
 		data = bytearray(2)
 		data[0] = (input >> 8) & 0x00FF
@@ -336,7 +421,14 @@ class QwiicCcs811(object):
 	#----------------------------------------------------	
 	# Enable the nINT signal
 	def enableInterrupts( self ):
-	
+		""" 
+			Set the Interrupt bit in the sensor and enable Interrupts
+			on the sensor
+
+			:return: SENSOR_SUCCESS
+			:rtype: integer
+
+		"""
 		value = self._i2c.readByte(self.address, CSS811_MEAS_MODE)
 		value |= (1 << 3) #Set INTERRUPT bit
 
@@ -347,6 +439,14 @@ class QwiicCcs811(object):
 	#----------------------------------------------------
 	# Disable the nINT signal
 	def disableInterrupts( self ):
+		""" 
+			Clear the Interrupt bit in the sensor and disable Interrupts
+			on the sensor
+
+			:return: SENSOR_SUCCESS
+			:rtype: integer
+
+		"""
 		value = self._i2c.readByte(self.address, CSS811_MEAS_MODE)
 		value &= (~(1 << 3) ) & 0xFF  #Set INTERRUPT bit. Just want first Byte
 
@@ -361,6 +461,16 @@ class QwiicCcs811(object):
 	# Mode 3 = every 60s
 	# Mode 4 = RAW mode
 	def setDriveMode( self,  mode ):
+		""" 
+			Set the Drive mode for the sensor
+
+			:param mode: Valid values are:
+					0 = Idle, 1 = read every 1s, 2 = every 10s, 3 = every 60s, 4 = RAW mode
+
+			:return: SENSOR_SUCCESS
+			:rtype: integer
+
+		"""
 
 		if (mode > 4):
 			mode = 4 # sanitize input
@@ -376,8 +486,19 @@ class QwiicCcs811(object):
 
 	#----------------------------------------------------
 	## Given a temp and humidity, write this data to the CSS811 for better compensation
-	#$ This function expects the humidity and temp to come in as floats
+	## This function expects the humidity and temp to come in as floats
 	def setEnvironmentalData( self, relativeHumidity,  temperature ):
+		""" 
+			Given a temp and humidity, write this data to the CSS811 for better compensation
+			This function expects the humidity and temp to come in as floats
+
+			:param relativeHumidity: The relativity Humity for the sensor to use
+			:param temperature: The temperature for the sensor to use			
+
+			:return: one of the SENSOR_ return codes.
+			:rtype: integer
+
+		"""
 
 		# Check for invalid temperatures
 		if temperature < -25 or temperature > 50 : 
@@ -424,13 +545,38 @@ class QwiicCcs811(object):
 
 	#----------------------------------------------------
 	def setRefResistance(self, input):
+		""" 
+			Set the sensors referance resistance
+
+			:param input: The referance resistance to set in the sensor
+			:return: No return value
+
+		"""
+
 		self.refResistance = input
 
 	def getRefResistance(self):
+		""" 
+			Get the sensors referance resistance
+
+			:return: The current reference resistance
+			:rtype: integer
+
+		"""
 		return self.refResistance
 
 	#----------------------------------------------------
 	def readNTC( self ):
+		""" 
+			Read the NTC values from the sensor and store for future calications. 
+
+			NOTE: The qwiic CCS811 doesn't support this function, but other CCS811 
+			sparkfun boards do.
+
+			:return: A SENSOR_ status code
+			:rtype: integer
+
+		"""
 	
 		data = self._i2c.readBlock(self.address, CSS811_NTC, 4)
 
@@ -458,24 +604,52 @@ class QwiicCcs811(object):
 	#----------------------------------------------------
 	# TVOC Value
 	def getTVOC( self ):
+		""" 
+			Return the current TVOC value. 
+
+			:return: The TVOC Value
+			:rtype: float
+
+		"""
 		return self._tVOC
 	
 	TVOC = property(getTVOC)
 	#----------------------------------------------------	
 	# CO2 Value
 	def getCO2( self ):
+		""" 
+			Return the current CO2 value. 
+
+			:return: The CO2 Value
+			:rtype: float
+
+		"""
 		return self._CO2
 
 	CO2 = property(getCO2)
 	#----------------------------------------------------
 	# Resistance Value
 	def getResistance( self ):
+		""" 
+			Return the current resistance value. 
+
+			:return: The resistance value
+			:rtype: float
+
+		"""
 		return self._resistance
 
 	resistance = property(getResistance)
 	#----------------------------------------------------	
 	# Temperature Value
 	def getTemperature( self ):
+		""" 
+			Return the current temperature value. 
+
+			:return: The temperature Value
+			:rtype: float
+
+		"""
 		return self._temperature
 
 	temperature = property(getTemperature)
