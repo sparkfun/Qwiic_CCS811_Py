@@ -52,7 +52,7 @@ Installation
 ---------------
 ### PyPi Installation
 
-This respoistory is hosted on PyPi as the [sparkfun-qwiic-ccs811](https://pypi.org/project/sparkfun-qwiic-ccs811/). On systems that support PyPi installation via pip, this library is installed using the following commands
+This repository is hosted on PyPi as the [sparkfun-qwiic-ccs811](https://pypi.org/project/sparkfun-qwiic-ccs811/) package. On systems that support PyPi installation via pip, this library is installed using the following commands
 
 For all users (note: the user must have sudo privileges):
 ```sh
