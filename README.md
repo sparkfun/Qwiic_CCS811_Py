@@ -29,7 +29,8 @@ This package can be used in conjunction with the overall [SparkFun qwiic Python 
 
 New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.sparkfun.com/qwiic).
 
-### :warning: **Using this sensor on a Raspberry Pi**? See the important [usage note](#raspberry-pi-use).
+### :warning: **Using this sensor on a Raspberry Pi**? :warning:
+Your system might need modification. See this [note](#raspberry-pi-use).
 
 Dependencies 
 --------------
