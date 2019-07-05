@@ -58,12 +58,12 @@ This repository is hosted on PyPi as the [sparkfun-qwiic-ccs811](https://pypi.or
 
 For all users (note: the user must have sudo privileges):
 ```sh
-sudo pip install sparkfun_qwiic_ccs811
+sudo pip install sparkfun-qwiic-ccs811
 ```
 For the current user:
 
 ```sh
-pip install sparkfun_qwiic_ccs811
+pip install sparkfun-qwiic-ccs811
 ```
 To install, make sure the setuptools package is installed on the system.
 
