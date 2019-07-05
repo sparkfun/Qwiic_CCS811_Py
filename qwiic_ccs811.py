@@ -52,7 +52,7 @@ This package can be used in conjunction with the overall [SparkFun qwiic Python 
 New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.sparkfun.com/qwiic).
 
 """
-from __future__ import print_function
+from __future__ import print_function, division
 import qwiic_i2c
 
 import time
@@ -240,7 +240,7 @@ class QwiicCcs811(object):
 		# qir quality values returned from the sensor
 		self.refResistance = 10000.
 		self._resistance = 0.0
-		self._tVOC = 0
+		self._TVOC = 0
 		self._CO2 = 0
 		self.vrefCounts = 0
 		self.ntcCounts = 0
@@ -324,7 +324,7 @@ class QwiicCcs811(object):
 		#  co2MSB, co2LSB, tvocMSB, tvocLSB
 	
 		self._CO2 = (data[0] << 8) | data[1]
-		self._tVOC = (data[2] << 8) | data[3]
+		self._TVOC = (data[2] << 8) | data[3]
 		return self.SENSOR_SUCCESS
 
 	#----------------------------------------------------
@@ -537,7 +537,7 @@ class QwiicCcs811(object):
 		# }
 		
 		# Correct rounding. See issue 8: https:# github.com/sparkfun/Qwiic_BME280_CCS811_Combo/issues/8
-		envData[0] = (rH + 250) / 500
+		envData[0] = (rH + 250) // 500
 		envData[1] = 0 # CCS811 only supports increments of 0.5 so bits 7-0 will always be zero
 	
 		temp += 25000 # Add the 25C offset
@@ -550,7 +550,7 @@ class QwiicCcs811(object):
 		# }
 		
 		# Correct rounding
-		envData[2] = (temp + 250) / 500
+		envData[2] = (temp + 250) // 500
 		envData[3] = 0
 		self._i2c.writeBlock(self.address, CSS811_ENV_DATA, envData)
 
@@ -624,9 +624,10 @@ class QwiicCcs811(object):
 			:rtype: float
 
 		"""
-		return self._tVOC
+		return self._TVOC
 	
 	TVOC = property(getTVOC)
+
 	#----------------------------------------------------	
 	# CO2 Value
 	def getCO2( self ):
