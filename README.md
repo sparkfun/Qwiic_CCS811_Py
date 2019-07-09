@@ -48,7 +48,7 @@ This driver package depends on the qwiic I2C driver:
 
 Documentation
 -------------
-The Sparkfun qwiic CCS811 module documentation is hosted at [ReadTheDocs](https://qwiic-ccs811-py.readthedocs.io/en/latest/?)
+The SparkFun qwiic CCS811 module documentation is hosted at [ReadTheDocs](https://qwiic-ccs811-py.readthedocs.io/en/latest/?)
 
 Installation
 ---------------
@@ -89,7 +89,7 @@ For this sensor to work on the Raspberry Pi, I2C clock stretching must be enable
 To do this:
 - Login as root to the target Raspberry Pi
 - Open the file /boot/config.txt in your favorite editor (vi, nano ...etc)
-- Scroll down until the bloct that contains the following is found:
+- Scroll down until the block that contains the following is found:
 ```ini
 dtparam=i2c_arm=on
 dtparam=i2s=on
