@@ -36,10 +36,18 @@ Your system might need modification. See this [note](#raspberry-pi-use).
 
 ## Contents
 
+* [Supported Platforms](#supported-platforms)
 * [Dependencies](#dependencies)
 * [Installation](#installation)
 * [Documentation](#documentation)
 * [Example Use](#example-use)
+
+Supported Platforms
+--------------------
+The qwiic CCS811 Python package current supports the following platforms:
+* [Raspberry Pi](https://www.sparkfun.com/search/results?term=raspberry+pi)
+* [NVidia Jetson Nano](https://www.sparkfun.com/products/15297)
+* [Google Coral Development Board](https://www.sparkfun.com/products/15318)
 
 Dependencies 
 --------------
