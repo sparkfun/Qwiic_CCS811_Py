@@ -247,11 +247,11 @@ class QwiicCcs811(object):
 		self._temperature =  0.0
 
 	# ----------------------------------
-	# isConnected()
+	# is_connected()
 	#
 	# Is an actual board connected to our system?
 
-	def isConnected(self):
+	def is_connected(self):
 		""" 
 			Determine if a CCS811 device is conntected to the system..
 
@@ -261,6 +261,7 @@ class QwiicCcs811(object):
 		"""
 		return qwiic_i2c.isDeviceConnected(self.address)
 
+	connected = property(is_connected)
 	# ----------------------------------
 	# begin()
 	#
@@ -294,12 +295,12 @@ class QwiicCcs811(object):
 			print("Invalid Chip ID: 0x%.2X" % chipID)
 			return self.SENSOR_ID_ERROR
 
-		if self.checkForStatusError() or not self.appValid():
+		if self.check_status_error() or not self.app_valid():
 			return self.SENSOR_INTERNAL_ERROR
 
 		self._i2c.writeCommand(self.address, CSS811_APP_START)
 
-		return self.setDriveMode(1)  # read every second
+		return self.set_drive_mode(1)  # read every second
 
 	#****************************************************************************# 
 	# 
@@ -309,7 +310,7 @@ class QwiicCcs811(object):
 	# Updates the total voltatile organic compounds (TVOC) in parts per billion (PPB)
 	# and the CO2 value
 	# Returns nothing
-	def readAlgorithmResults( self ):
+	def read_algorithm_results( self ):
 		""" 
 			Reads the resutls from the sensor and stores internally
 
@@ -329,7 +330,7 @@ class QwiicCcs811(object):
 
 	#----------------------------------------------------
 	# Checks to see if error bit is set
-	def checkForStatusError( self ):
+	def check_status_error( self ):
 		""" 
 			Returns  if the Error bit on the sensor is set.
 
@@ -344,7 +345,7 @@ class QwiicCcs811(object):
 	
 	#----------------------------------------------------	
 	# Checks to see if DATA_READ flag is set in the status register
-	def dataAvailable( self ):
+	def data_available( self ):
 		""" 
 			Returns True if data is available on the sensor
 
@@ -362,7 +363,7 @@ class QwiicCcs811(object):
 
 	#----------------------------------------------------
 	# Checks to see if APP_VALID flag is set in the status register
-	def appValid( self ):
+	def app_valid( self ):
 		""" 
 			Returns True if if the sensor APP_VALID bit is set in the status register
 
@@ -378,7 +379,7 @@ class QwiicCcs811(object):
 
 		return (value & 1 << 4 != 0)
 
-	def getErrorRegister( self ):
+	def get_error_register( self ):
 
 		""" 
 			Returns the value of the sensors error Register
@@ -394,10 +395,12 @@ class QwiicCcs811(object):
 
 		return value  # Send all errors in the event of communication error
 
+	error_register = property(get_error_register)
+
 	# Returns the baseline value
 	# Used for telling sensor what 'clean' air is
 	# You must put the sensor in clean air and record this value
-	def getBaseline( self ):
+	def get_baseline( self ):
 		""" 
 			Returns the baseline value
 			Used for telling sensor what 'clean' air is
@@ -415,7 +418,7 @@ class QwiicCcs811(object):
 		return value
 
 	#----------------------------------------------------
-	def setBaseline( self, input ):
+	def set_baseline( self, input ):
 		""" 
 			Set the baseline value for the sensor
 
@@ -431,9 +434,10 @@ class QwiicCcs811(object):
 		
 		return self.SENSOR_SUCCESS
 
+	baseline = property(get_baseline, set_baseline)
 	#----------------------------------------------------	
 	# Enable the nINT signal
-	def enableInterrupts( self ):
+	def enable_interrupts( self ):
 		""" 
 			Set the Interrupt bit in the sensor and enable Interrupts
 			on the sensor
@@ -451,7 +455,7 @@ class QwiicCcs811(object):
 
 	#----------------------------------------------------
 	# Disable the nINT signal
-	def disableInterrupts( self ):
+	def disable_interrupts( self ):
 		""" 
 			Clear the Interrupt bit in the sensor and disable Interrupts
 			on the sensor
@@ -473,7 +477,7 @@ class QwiicCcs811(object):
 	# Mode 2 = every 10s
 	# Mode 3 = every 60s
 	# Mode 4 = RAW mode
-	def setDriveMode( self,  mode ):
+	def set_drive_mode( self,  mode ):
 		""" 
 			Set the Drive mode for the sensor
 
@@ -500,7 +504,7 @@ class QwiicCcs811(object):
 	#----------------------------------------------------
 	## Given a temp and humidity, write this data to the CSS811 for better compensation
 	## This function expects the humidity and temp to come in as floats
-	def setEnvironmentalData( self, relativeHumidity,  temperature ):
+	def set_environmental_data( self, relativeHumidity,  temperature ):
 		""" 
 			Given a temp and humidity, write this data to the CSS811 for better compensation
 			This function expects the humidity and temp to come in as floats
@@ -557,7 +561,7 @@ class QwiicCcs811(object):
 		return self.SENSOR_SUCCESS
 
 	#----------------------------------------------------
-	def setRefResistance(self, input):
+	def set_reference_resistance(self, input):
 		""" 
 			Set the sensors referance resistance
 
@@ -568,7 +572,7 @@ class QwiicCcs811(object):
 
 		self.refResistance = input
 
-	def getRefResistance(self):
+	def get_reference_resistance(self):
 		""" 
 			Get the sensors referance resistance
 
@@ -578,8 +582,10 @@ class QwiicCcs811(object):
 		"""
 		return self.refResistance
 
+	referance_resistance = property(get_reference_resistance, set_reference_resistance)
+
 	#----------------------------------------------------
-	def readNTC( self ):
+	def read_ntc( self ):
 		""" 
 			Read the NTC values from the sensor and store for future calications. 
 
@@ -604,7 +610,7 @@ class QwiicCcs811(object):
 		# Modified by Max Mayfield,
 		if self._resistance == 0:
 			# we had an error of some sorts. Log 0 is not a happy value
-			print("Error - Invalid recieved from sensor")
+			print("Error - Invalid received from sensor")
 			return 1
 
 		self._temperature = math.log(int(self._resistance))
@@ -616,7 +622,7 @@ class QwiicCcs811(object):
 
 	#----------------------------------------------------
 	# TVOC Value
-	def getTVOC( self ):
+	def get_tvoc( self ):
 		""" 
 			Return the current TVOC value. 
 
@@ -626,11 +632,11 @@ class QwiicCcs811(object):
 		"""
 		return self._TVOC
 	
-	TVOC = property(getTVOC)
+	TVOC = property(get_tvoc)
 
 	#----------------------------------------------------	
 	# CO2 Value
-	def getCO2( self ):
+	def get_co2( self ):
 		""" 
 			Return the current CO2 value. 
 
@@ -640,10 +646,10 @@ class QwiicCcs811(object):
 		"""
 		return self._CO2
 
-	CO2 = property(getCO2)
+	CO2 = property(get_co2)
 	#----------------------------------------------------
 	# Resistance Value
-	def getResistance( self ):
+	def get_resistance( self ):
 		""" 
 			Return the current resistance value. 
 
@@ -653,10 +659,10 @@ class QwiicCcs811(object):
 		"""
 		return self._resistance
 
-	resistance = property(getResistance)
+	resistance = property(get_resistance)
 	#----------------------------------------------------	
 	# Temperature Value
-	def getTemperature( self ):
+	def get_temperature( self ):
 		""" 
 			Return the current temperature value. 
 
@@ -666,4 +672,4 @@ class QwiicCcs811(object):
 		"""
 		return self._temperature
 
-	temperature = property(getTemperature)
+	temperature = property(get_temperature)

@@ -57,7 +57,7 @@ def runExample():
 	print("\nSparkFun CCS811 Sensor Example 3 - NTC data to CCS811 for compensation. \n")
 	mySensor = qwiic_ccs811.QwiicCcs811()
 
-	if mySensor.isConnected() == False:
+	if mySensor.connected == False:
 		print("The Qwiic CCS811 device isn't connected to the system. Please check your connection", \
 			file=sys.stderr)
 		return
@@ -74,17 +74,17 @@ def runExample():
 		print("  Humidity:    %.2f percent relative" % humidityVariable)
 		print("  Temperature: %.2f degrees C" % temperatureVariable)
 
-		mySensor.setEnvironmentalData(humidityVariable, temperatureVariable)
-		if mySensor.dataAvailable():
+		mySensor.set_environmental_data(humidityVariable, temperatureVariable)
+		if mySensor.data_available():
 
-			mySensor.readAlgorithmResults()
+			mySensor.read_algorithm_results()
 
 			print("  CO2:\t%.3f ppm" % mySensor.CO2)
 			print("  tVOC:\t%.3f ppb\n" % mySensor.TVOC)	
 
-		elif mySensor.checkForStatusError():
+		elif mySensor.check_status_error():
 
-			error = mySensor.getErrorRegister();
+			error = mySensor.get_error_register();
 			if error == 0xFF:   
 				# communication error
 				print("Failed to get Error ID register from sensor")

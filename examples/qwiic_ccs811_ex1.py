@@ -46,7 +46,7 @@ def runExample():
 	print("\nSparkFun CCS811 Sensor Basic Example \n")
 	mySensor = qwiic_ccs811.QwiicCcs811()
 
-	if mySensor.isConnected() == False:
+	if mySensor.connected == False:
 		print("The Qwiic CCS811 device isn't connected to the system. Please check your connection", \
 			file=sys.stderr)
 		return
@@ -55,7 +55,7 @@ def runExample():
 
 	while True:
 
-		mySensor.readAlgorithmResults()
+		mySensor.read_algorithm_results()
 
 		print("CO2:\t%.3f" % mySensor.CO2)
 
