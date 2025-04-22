@@ -64,6 +64,7 @@ from __future__ import print_function, division
 import time
 import math
 import sys
+import os
 import qwiic_i2c
 
 #======================================================================
@@ -105,6 +106,13 @@ def __checkIsOnRPi():
     except IOError:
         return False
 
+def _findBootFile(filename):
+    if filename.startswith("/boot/") and filename.endswith(".txt"):
+        if os.path.isdir("/boot/firmware"):
+            if os.path.isfile("/boot/firmware" + filename[5:]):
+                filename = "/boot/firmware" + filename[5:]
+    return filename
+
 # check if stretching is set if on a rpi
 #
 def _checkForRPiI2CClockStretch():
@@ -115,7 +123,7 @@ def _checkForRPiI2CClockStretch():
 
     # read the boot config file and see if the clock stretch param is set
     try:
-        with open('/boot/config.txt') as fConfig:
+        with open(_findBootFile('/boot/config.txt')) as fConfig:
 
             strConfig = fConfig.read()
             for line in strConfig.split('\n'):
